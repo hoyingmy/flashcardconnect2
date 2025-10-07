@@ -22,11 +22,11 @@
 </head>
 <body>
   <script>
-    // Your p5.js code
     let video;
     let label = "Please Display Flashcard";
     let classifier;
     let modelURL = 'https://teachablemachine.withgoogle.com/models/9Ca5bP4Ev/';
+    let feedback = ""; // To store check or X
 
     function preload() {
       classifier = ml5.imageClassifier(modelURL + 'model.json');
@@ -46,10 +46,28 @@
     function draw() {
       background(0);
       image(video, 0, 0);
+
+      // Display the question prominently at the top
+      textSize(30);
+      textAlign(CENTER, TOP);
+      fill(255);
+      text("What is art?", width / 2, 20);
+      
+      // Display answer options with more space below
+      textSize(16);
+      textAlign(LEFT, TOP);
+      text("A. Subject", width / 2 - 100, 60);
+      text("B. Unsure", width / 2 - 100, 80);
+      text("C. Colors", width / 2 - 100, 100);
+      text("D. Images", width / 2 - 100, 120);
+
+      // Display the detected label
       textSize(25);
       textAlign(CENTER, CENTER);
       fill(255);
       text(label, width / 2, height - 16);
+
+      // Display the letter (smaller size)
       let emoji = "A";
       if (label == "B") {
         emoji = "B";
@@ -58,8 +76,19 @@
       } else if (label == "D") {
         emoji = "D";
       }
-      textSize(256);
-      text(emoji, width / 2, height / 2);
+      textSize(150); // Reduced from 256 to 150
+      text(emoji, width / 2, height / 2 + 50); // Shifted down to add space
+
+      // Display feedback (green check for B, red X for others)
+      if (label == "B") {
+        fill(0, 255, 0); // Green
+        textSize(100);
+        text("✓", width / 2 + 100, height / 2 + 50);
+      } else if (label == "A" || label == "C" || label == "D") {
+        fill(255, 0, 0); // Red
+        textSize(100);
+        text("✗", width / 2 + 100, height / 2 + 50);
+      }
     }
 
     function gotResults(error, results) {
@@ -73,5 +102,3 @@
   </script>
 </body>
 </html>
-
-
